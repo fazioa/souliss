@@ -179,7 +179,11 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 // Inlcude framework code
 #include "frame/vNet/vNet.cpp"
 #include "frame/MaCaco/MaCaco.cpp"
-//#include "frame/MqttHomie/MqttHomie.cpp"
+
+#ifdef HOMIE_H
+	//#include "frame/MqttHomie/MqttHomie.cpp"
+#endif
+
 
 // Include IO definitions and other tools
 #include "hardware/IOdef.cpp"

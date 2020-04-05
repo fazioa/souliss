@@ -29,7 +29,6 @@
 
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
-#include "Souliss.h"
 
 #define	PINRESET			0x0
 #define	PINSET				0x1

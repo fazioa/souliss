@@ -24,12 +24,9 @@
 
 */
 /**************************************************************************/
-#ifndef HOMIE_H
-#define HOMIE_H
 
 void MQTT_connect();
 void Homie_init();
-void Homie_announce();
 
 
-#endif
+

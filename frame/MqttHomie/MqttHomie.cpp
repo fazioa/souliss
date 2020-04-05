@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss - MaCaco Communication Protocol
-    Copyright (C) 2011  Tonino
+    Copyright (C) 2020  Tonino
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,9 +24,6 @@
 
 */
 /**************************************************************************/
-#ifndef HOMIE_H
-#define HOMIE_H
-
 #include "frame/MqttHomie/MqttHomie.h"
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
@@ -71,20 +68,17 @@ void MQTT_connect() {
 
 void Homie_init()
 {
-MQTT_connect();
-MQTTstate.publish("init");
+	MQTT_connect();
+	MQTTstate.publish("init");
 
-MQTTversion.publish(HOMIE_VERSION);
-MQTTname.publish(HOMIE_NODEID);
-MQTTnodes.publish(HOMIE_NODES);
-MQTTextensions.publish(HOMIE_EXTENSIONS);
-}
-
-void Homie_announce()
-{
+	MQTTversion.publish(HOMIE_VERSION);
+	MQTTname.publish(HOMIE_NODEID);
+	MQTTnodes.publish(HOMIE_NODES);
+	MQTTextensions.publish(HOMIE_EXTENSIONS);
+	
 	MQTTnodename.publish(HOMIE_NODENAME);
-MQTTnodetype.publish(HOMIE_NODETYPE);
-MQTTnodeproperties.publish(HOMIE_NODEPROPERTIES);
-MQTTpropertiesunit.publish(HOMIE_PROPERTIESUNIT);
-MQTTstate.publish("ready");
+	MQTTnodetype.publish(HOMIE_NODETYPE);
+	MQTTnodeproperties.publish(HOMIE_NODEPROPERTIES);
+	MQTTpropertiesunit.publish(HOMIE_PROPERTIESUNIT);
+	MQTTstate.publish("ready");
 }
