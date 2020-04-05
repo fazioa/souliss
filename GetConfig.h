@@ -40,6 +40,10 @@
 #include "conf/cores/cores.h"
 #include "user/user_config.h"
 
+#ifdef HOMIE_H
+	#include "conf/frame/MqttHomieCfg.h"
+#endif
+
 // Define to zero if not used
 #ifndef	VNET_MEDIA1_ENABLE
 #define	VNET_MEDIA1_ENABLE	0

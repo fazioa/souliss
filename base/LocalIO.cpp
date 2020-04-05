@@ -66,6 +66,10 @@ void Souliss_Initialize(U8 *memory_map)
 
 	// Init MaCaco
 	MaCaco_init(memory_map);
+	#ifdef HOMIE_H
+		Homie_init();
+	#endif
+	
 }
 
 /**************************************************************************/
