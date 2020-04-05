@@ -24,9 +24,6 @@
 
 */
 /**************************************************************************/
-#ifndef HOMIE_H
-#define HOMIE_H
-
 #define HOMIE_VERSION "3.0"
 #define HOMIE_ROOT "homie/souliss"
 

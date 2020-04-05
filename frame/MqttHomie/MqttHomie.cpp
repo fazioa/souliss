@@ -24,9 +24,6 @@
 
 */
 /**************************************************************************/
-#ifndef HOMIE_H
-#define HOMIE_H
-
 #include "frame/MqttHomie/MqttHomie.h"
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
