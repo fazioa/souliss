@@ -1,6 +1,6 @@
 /**************************************************************************
 	Souliss - MaCaco Communication Protocol
-    Copyright (C) 2011  Tonino
+    Copyright (C) 2020  Tonino
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,14 +26,15 @@
 /**************************************************************************/
 #include "frame/MqttHomie/MqttHomie.h"
 
+
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_PORT, HOSTNAME, MQTT_USERNAME, MQTT_PASSWORD);
-
 Adafruit_MQTT_Publish MQTTversion = Adafruit_MQTT_Publish(&mqtt, HOMIE_VERSION_FEED);
 Adafruit_MQTT_Publish MQTTname = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEID_FEED);
 Adafruit_MQTT_Publish MQTTnodes = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODES_FEED);
 Adafruit_MQTT_Publish MQTTextensions = Adafruit_MQTT_Publish(&mqtt, HOMIE_EXTENSIONS_FEED);
 Adafruit_MQTT_Publish MQTTstate = Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED);
+
 
 Adafruit_MQTT_Publish MQTTnodename = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODENAME_FEED);
 Adafruit_MQTT_Publish MQTTnodetype = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODETYPE_FEED);
@@ -42,6 +43,7 @@ Adafruit_MQTT_Publish MQTTpropertiesunit = Adafruit_MQTT_Publish(&mqtt, HOMIE_PR
 
 
 Adafruit_MQTT_Publish MQTTsendTemp = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEROOT "/temp");
+//Adafruit_MQTT_Publish MQTTsendTemp = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEROOT "/temp");
 /**************************************************************************/
 /*!
     Build frame and write to destination device, it use the oFrame structure
@@ -68,20 +70,17 @@ void MQTT_connect() {
 
 void Homie_init()
 {
-MQTT_connect();
-MQTTstate.publish("init");
+	MQTT_connect();
+	MQTTstate.publish("init");
 
-MQTTversion.publish(HOMIE_VERSION);
-MQTTname.publish(HOMIE_NODEID);
-MQTTnodes.publish(HOMIE_NODES);
-MQTTextensions.publish(HOMIE_EXTENSIONS);
-}
-
-void Homie_announce()
-{
+	MQTTversion.publish(HOMIE_VERSION);
+	MQTTname.publish(HOMIE_NODEID);
+	MQTTnodes.publish(HOMIE_NODES);
+	MQTTextensions.publish(HOMIE_EXTENSIONS);
+	
 	MQTTnodename.publish(HOMIE_NODENAME);
-MQTTnodetype.publish(HOMIE_NODETYPE);
-MQTTnodeproperties.publish(HOMIE_NODEPROPERTIES);
-MQTTpropertiesunit.publish(HOMIE_PROPERTIESUNIT);
-MQTTstate.publish("ready");
+	MQTTnodetype.publish(HOMIE_NODETYPE);
+	MQTTnodeproperties.publish(HOMIE_NODEPROPERTIES);
+	MQTTpropertiesunit.publish(HOMIE_PROPERTIESUNIT);
+	MQTTstate.publish("ready");
 }

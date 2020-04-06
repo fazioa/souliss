@@ -34,6 +34,29 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
 }
 
+void Souliss_SetT11_mqtt_homie(U8 *memory_map, U8 slot, String name)
+{
+	#ifndef HOMIE_NODES
+	#define HOMIE_NODES " - "
+	#endif
+	if(HOMIE_NODES!="") {
+		 String sTmp=strcat(HOMIE_NODES, ", ");
+		 name=sTmp + name;
+	}
+	
+	#define HOMIE_NODES "test"
+		Serial.print("HOMIE_NODES: ");
+		Serial.println(HOMIE_NODES);
+	
+	#define HOMIE_NODENAME "testnodename"
+	#define HOMIE_NODETYPE "Float"
+	#define HOMIE_NODEPROPERTIES "temp"
+	#define HOMIE_PROPERTIESUNIT "W"
+	
+	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
+}
+
+
 /**************************************************************************/
 /*!
 	Typical 11 : ON/OFF Digital Output with Timer Option

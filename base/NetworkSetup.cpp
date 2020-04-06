@@ -31,7 +31,6 @@
 #include "tools/types.h"
 #include "GetConfig.h"			// need : ethUsrCfg.h, vNetCfg.h, SoulissCfg.h, MaCacoCfg.h
 #include "Souliss.h"
-
 bool FirstInit = {false}, addrsrv = {false};
 U16 keyidval=0;
 uint8_t	myvNet_dhcp=0;
@@ -818,6 +817,7 @@ void Souliss_JoinNetwork()
 	// Request to join a network only if I've got an address
 	if(vNet_GetAddress(vNet_MyMedia()))
 		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, keyidval, 0, 0, 0);
+
 }
 
 /**************************************************************************/
