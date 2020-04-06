@@ -27,6 +27,3 @@
 
 void MQTT_connect();
 void Homie_init();
-
-
-

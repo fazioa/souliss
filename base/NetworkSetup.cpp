@@ -822,9 +822,6 @@ void Souliss_JoinNetwork()
 	if(vNet_GetAddress(vNet_MyMedia()))
 		MaCaco_send(0xFFFF, MaCaco_JOINNETWORK, keyidval, 0, 0, 0);
 
-	#ifdef HOMIE_H
-		Homie_init();
-	#endif
 }
 
 /**************************************************************************/

@@ -24,10 +24,6 @@
 
 */
 /**************************************************************************/
-#ifndef HOMIE_H
-#define HOMIE_H
-#endif
-
 #define HOMIE_VERSION "3.0"
 #define HOMIE_ROOT "homie/souliss"
 
@@ -42,3 +38,13 @@
 #define  HOMIE_NODETYPE_FEED HOMIE_NODEROOT "/&type "
 #define  HOMIE_NODEPROPERTIES_FEED HOMIE_NODEROOT "/$properties"
 #define  HOMIE_PROPERTIESUNIT_FEED HOMIE_NODEROOT "/" HOMIE_NODEPROPERTIES "/$unit"
+
+#define HOMIE_EXTENSIONS ""
+#define HOMIE_PROPERTIESUNIT ""
+#define HOMIE_NODENAME ""
+#define HOMIE_NODETYPE ""
+#define HOMIE_NODEPROPERTIES ""
+#define HOMIE_NODES ""
+
+
+#define HOMIE_NODEROOT HOMIE_ROOT "/luce1_noderoot"

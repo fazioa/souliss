@@ -181,7 +181,7 @@ float Souliss_LastIn_GetAnalog(U8 *memory_map, U8 id, U8 slot);
 #include "frame/MaCaco/MaCaco.cpp"
 
 #ifdef HOMIE_H
-	//#include "frame/MqttHomie/MqttHomie.cpp"
+	#include "frame/MqttHomie/MqttHomie.cpp"
 #endif
 
 
