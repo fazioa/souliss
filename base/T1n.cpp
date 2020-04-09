@@ -34,24 +34,42 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
 }
 
-void Souliss_SetT11_mqtt_homie(U8 *memory_map, U8 slot, String name)
-{
-	#ifndef HOMIE_NODES
-	#define HOMIE_NODES " - "
-	#endif
-	if(HOMIE_NODES!="") {
-		 String sTmp=strcat(HOMIE_NODES, ", ");
-		 name=sTmp + name;
-	}
+
+
+
+void Souliss_SetT11_mqtt_homie(U8 *memory_map, U8 slot, String typicalName, String typicalDescription)
+	{
+Serial.println("Souliss_SetT11_mqtt_homie: ");
+
+	String typicalRoot= String(HOMIE_ROOT) + "/" + typicalName;
+	String name_feed = typicalRoot + "/$name";
 	
-	#define HOMIE_NODES "test"
-		Serial.print("HOMIE_NODES: ");
-		Serial.println(HOMIE_NODES);
+	 String properties_feed = typicalRoot + "/$properties";
+	 String type_feed = typicalRoot + "/&type";
 	
-	#define HOMIE_NODENAME "testnodename"
-	#define HOMIE_NODETYPE "Float"
-	#define HOMIE_NODEPROPERTIES "temp"
-	#define HOMIE_PROPERTIESUNIT "W"
+	
+	Serial.println(strToCharArray(name_feed));
+	Serial.println(strToCharArray(typicalDescription));
+	
+	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(name_feed)).publish(strToCharArray(typicalDescription));
+	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(properties_feed)).publish("power");
+	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(type_feed)).publish("light");
+	
+	 String propertyRoot= typicalRoot + "power";
+	String property_name_feed = propertyRoot + "/&name";
+	String property_settable_feed = propertyRoot + "/&settable";
+	String property_format_feed = propertyRoot + "/&format";
+	String property_retained_feed = propertyRoot + "/&retained";
+
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_name_feed)).publish(strToCharArray(typicalDescription));
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_settable_feed)).publish("true");
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_format_feed)).publish("ON, OFF");
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_retained_feed)).publish("true");
+	
+	
+
+		
+	//Homie_device_ready();
 	
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
 }

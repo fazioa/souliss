@@ -28,22 +28,9 @@
 
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
-Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_PORT, HOSTNAME, MQTT_USERNAME, MQTT_PASSWORD);
-Adafruit_MQTT_Publish MQTTversion = Adafruit_MQTT_Publish(&mqtt, HOMIE_VERSION_FEED);
-Adafruit_MQTT_Publish MQTTname = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEID_FEED);
-Adafruit_MQTT_Publish MQTTnodes = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODES_FEED);
-Adafruit_MQTT_Publish MQTTextensions = Adafruit_MQTT_Publish(&mqtt, HOMIE_EXTENSIONS_FEED);
-Adafruit_MQTT_Publish MQTTstate = Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED);
+ Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_PORT, HOSTNAME, MQTT_USERNAME, MQTT_PASSWORD);
 
 
-Adafruit_MQTT_Publish MQTTnodename = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODENAME_FEED);
-Adafruit_MQTT_Publish MQTTnodetype = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODETYPE_FEED);
-Adafruit_MQTT_Publish MQTTnodeproperties = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEPROPERTIES_FEED);
-Adafruit_MQTT_Publish MQTTpropertiesunit = Adafruit_MQTT_Publish(&mqtt, HOMIE_PROPERTIESUNIT_FEED);
-
-
-Adafruit_MQTT_Publish MQTTsendTemp = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEROOT "/temp");
-//Adafruit_MQTT_Publish MQTTsendTemp = Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEROOT "/temp");
 /**************************************************************************/
 /*!
     Build frame and write to destination device, it use the oFrame structure
@@ -71,16 +58,35 @@ void MQTT_connect() {
 void Homie_init()
 {
 	MQTT_connect();
-	MQTTstate.publish("init");
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_VERSION_FEED).publish(HOMIE_VERSION);
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEID_FEED).publish(HOMIE_NODEID);
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("init");
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_NODE_NAME_FEED).publish(HOMIE_NODENAME);
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_EXTENSIONS_FEED).publish(HOMIE_EXTENSIONS);
 
-	MQTTversion.publish(HOMIE_VERSION);
-	MQTTname.publish(HOMIE_NODEID);
-	MQTTnodes.publish(HOMIE_NODES);
-	MQTTextensions.publish(HOMIE_EXTENSIONS);
 	
-	MQTTnodename.publish(HOMIE_NODENAME);
-	MQTTnodetype.publish(HOMIE_NODETYPE);
-	MQTTnodeproperties.publish(HOMIE_NODEPROPERTIES);
-	MQTTpropertiesunit.publish(HOMIE_PROPERTIESUNIT);
-	MQTTstate.publish("ready");
+	// MQTTnodename.publish(HOMIE_NODEDESC);
+	// MQTTnodeproperties.publish(HOMIE_SWITCHPROPERTYNAME);
+	// MQTTnodetype.publish(HOMIE_NODETYPE);
+	
+	// MQTTnodeproperties_name.publish(HOMIE_SWITCHPROPERTYDESC);
+	// MQTTnodeproperties_settable.publish(HOMIE_SWITCHSETTABLE);
+	// MQTTnodeproperties_format.publish(HOMIE_SWITCHFORMAT);
+	// MQTTnodeproperties_retained.publish(HOMIE_SWITCHRETAINED);
+	
+	// MQTTnodeproperties_datatype.publish(HOMIE_SWITCHDATATYPE);
+	
+	// MQTTswitch_state.publish("ON");
+}
+
+void Homie_device_ready()
+{
+	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("ready");
+}
+
+char* strToCharArray(String s)
+{
+	 char* charBuf[s.length()+1];
+	 s.toCharArray(charBuf, s.length()+1);
+	 return charBuf[];
 }

@@ -122,7 +122,7 @@ unsigned long tmr_fast=0, tmr_slow=0;
 /************** Typicals ******************/
 #define	Set_SimpleLight(slot)		Souliss_SetT11(memory_map, slot)
 
-#define	Set_SimpleLight_mqtt_homie(slot, name)		Souliss_SetT11_mqtt_homie(memory_map, slot, name)
+#define	Set_SimpleLight_mqtt_homie(slot, typicalName, typicalDescription)		Souliss_SetT11_mqtt_homie(memory_map, slot, typicalName, typicalDescription)
 
 #define	Logic_SimpleLight(slot)		Souliss_Logic_T11(memory_map, slot, &data_changed)
 #define Timer_SimpleLight(slot)		Souliss_T11_Timer(memory_map, slot)

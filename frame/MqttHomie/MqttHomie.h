@@ -27,3 +27,5 @@
 
 void MQTT_connect();
 void Homie_init();
+void Homie_device_ready();
+char* strToCharArray(String s);
