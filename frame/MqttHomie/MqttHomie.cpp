@@ -65,23 +65,21 @@ void Homie_init()
 
 }
 
+
+
 void Homie_device_ready()
 {
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("ready");
 }
 
-char charBuf[BUFFER_LENGHT_FOR_STRTOCHARARRAY_FUNC];
-char* strToCharArray(String s)
-	 {
-	// Serial.println("charBuf: ");
-    // Serial.println(charBuf);
-	 // memset(charBuf, 0, sizeof(BUFFER_LENGHT_FOR_STRTOCHARARRAY_FUNC));
-	 	 
-	  // Serial.println("charBufCLR: ");
-	  // Serial.println(charBuf);
-	  
-	 s.toCharArray(charBuf, s.length()+1);
+void Homie_declare_nodes()
+{
+	String nodes_feed = String(HOMIE_ROOT) + "/$nodes" ;
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(nodes_feed)).publish(nodes.c_str());
+}
 
-	  
-	 return charBuf;
+void Homie_declare_nodes(String sNodes)
+{
+	String nodes_feed = String(HOMIE_ROOT) + "/$nodes" ;
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(nodes_feed)).publish(sNodes.c_str());
 }

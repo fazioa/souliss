@@ -23,7 +23,7 @@
     \ingroup
 
 */
-
+#include "frame/MqttHomie/util.cpp"
 /**************************************************************************/
 /*!
 	Define the use of Typical 11 : ON/OFF Digital Output with Timer Option
@@ -41,37 +41,42 @@ void Souliss_SetT11_mqtt_homie(U8 *memory_map, U8 slot, String typicalName, Stri
 	{
 Serial.println("Souliss_SetT11_mqtt_homie: ");
 
-	String typicalRoot= String(HOMIE_ROOT) + "/" + typicalName;
-	String name_feed = typicalRoot + "/$name";
-	
-	 String properties_feed = typicalRoot + "/$properties";
-	 String type_feed = typicalRoot + "/&type";
-	
-	
-	Serial.println(strToCharArray(name_feed));
-	Serial.println(strToCharArray(typicalDescription));
-	
-	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(name_feed)).publish(strToCharArray(typicalDescription));
-	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(properties_feed)).publish("power");
-	 Adafruit_MQTT_Publish(&mqtt, strToCharArray(type_feed)).publish("light");
-	
-	 String propertyRoot= typicalRoot + "power";
-	String property_name_feed = propertyRoot + "/&name";
-	String property_settable_feed = propertyRoot + "/&settable";
-	String property_format_feed = propertyRoot + "/&format";
-	String property_retained_feed = propertyRoot + "/&retained";
+// if(nodes=="")
+// {
+	// nodes=typicalName;
+// } else 
+// {
+	// nodes=nodes + "," + typicalName;
+// }
+ // Serial.println(nodes);
 
-	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_name_feed)).publish(strToCharArray(typicalDescription));
+	
+	String typicalRoot= String(HOMIE_ROOT) + "/" + typicalName;
+	String name_node_feed = typicalRoot + "/$name";
+	String properties_feed = typicalRoot + "/$properties";
+	String type_feed = typicalRoot + "/$type";
+	
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(name_node_feed)).publish(typicalDescription.c_str());
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(properties_feed)).publish("power");
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(type_feed)).publish("switch");
+	
+	String propertyRoot= typicalRoot + "/power";
+	String property_name_feed = propertyRoot + "/$name";
+	String property_settable_feed = propertyRoot + "/$settable";
+	String property_format_feed = propertyRoot + "/$format";
+	String property_datatype_feed = propertyRoot + "/$datatype";
+	String property_retained_feed = propertyRoot + "/$retained";
+
+	//Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_name_feed)).publish(strToCharArray(typicalDescription));
+	
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_name_feed)).publish((typicalDescription+"-Power").c_str());
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_settable_feed)).publish("true");
+	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_datatype_feed)).publish("boolean");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_format_feed)).publish("ON, OFF");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_retained_feed)).publish("true");
-	
-	
-
-		
-	//Homie_device_ready();
-	
+		 
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
+	delay(500);
 }
 
 
