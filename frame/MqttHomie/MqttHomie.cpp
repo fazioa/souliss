@@ -61,22 +61,8 @@ void Homie_init()
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_VERSION_FEED).publish(HOMIE_VERSION);
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEID_FEED).publish(HOMIE_NODEID);
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("init");
-	Adafruit_MQTT_Publish(&mqtt, HOMIE_NODE_NAME_FEED).publish(HOMIE_NODENAME);
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_EXTENSIONS_FEED).publish(HOMIE_EXTENSIONS);
 
-	
-	// MQTTnodename.publish(HOMIE_NODEDESC);
-	// MQTTnodeproperties.publish(HOMIE_SWITCHPROPERTYNAME);
-	// MQTTnodetype.publish(HOMIE_NODETYPE);
-	
-	// MQTTnodeproperties_name.publish(HOMIE_SWITCHPROPERTYDESC);
-	// MQTTnodeproperties_settable.publish(HOMIE_SWITCHSETTABLE);
-	// MQTTnodeproperties_format.publish(HOMIE_SWITCHFORMAT);
-	// MQTTnodeproperties_retained.publish(HOMIE_SWITCHRETAINED);
-	
-	// MQTTnodeproperties_datatype.publish(HOMIE_SWITCHDATATYPE);
-	
-	// MQTTswitch_state.publish("ON");
 }
 
 void Homie_device_ready()
@@ -84,9 +70,18 @@ void Homie_device_ready()
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("ready");
 }
 
+char charBuf[BUFFER_LENGHT_FOR_STRTOCHARARRAY_FUNC];
 char* strToCharArray(String s)
-{
-	 char* charBuf[s.length()+1];
+	 {
+	// Serial.println("charBuf: ");
+    // Serial.println(charBuf);
+	 // memset(charBuf, 0, sizeof(BUFFER_LENGHT_FOR_STRTOCHARARRAY_FUNC));
+	 	 
+	  // Serial.println("charBufCLR: ");
+	  // Serial.println(charBuf);
+	  
 	 s.toCharArray(charBuf, s.length()+1);
-	 return charBuf[];
+
+	  
+	 return charBuf;
 }
