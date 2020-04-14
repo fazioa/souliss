@@ -136,10 +136,15 @@ Serial.println("Souliss_SetT11_mqtt_homie: ");
 
 */
 /**************************************************************************/
-U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
+U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map, U8 slot, U8 *trigger, String typicalName)
 {
 	U8 i_trigger=0;														// Internal trigger
-
+#ifdef HOMIE_H
+	String setPower_feed;
+	if(typicalName!= "")
+	setPower_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power";
+#endif
+	
 	// Look for input value, update output. If the output is not set, trig a data
 	// change, otherwise just reset the input
 
@@ -151,6 +156,12 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_IN_s + slot]; //Set the timer value
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		#ifdef HOMIE_H
+		if(typicalName!= "")
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(setPower_feed)).publish("ON");
+		#endif
+	
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd ||
 					memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_Timed)		// Off Command
@@ -161,6 +172,11 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;			// Switch off the output
 		memory_map[MaCaco_AUXIN_s + slot] = 0; 		//Reset the timer
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		#ifdef HOMIE_H
+		if(typicalName!= "")
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(setPower_feed)).publish("OFF");
+		#endif
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
 	{
@@ -169,14 +185,30 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
+		
+		#ifdef HOMIE_H
+		if(typicalName!= "")
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(setPower_feed)).publish("ON");
+		#endif
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)
 	{
 		if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OnCoil)
+		{	
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output
+			#ifdef HOMIE_H
+			if(typicalName!= "")
+			Adafruit_MQTT_Publish(&mqtt, strToCharArray(setPower_feed)).publish("OFF");
+			#endif
+		}
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
+		{
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Switch ON the output
-
+			#ifdef HOMIE_H
+			if(typicalName!= "")
+			Adafruit_MQTT_Publish(&mqtt, strToCharArray(setPower_feed)).publish("ON");
+			#endif
+		}
 		i_trigger = Souliss_TRIGGED;
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	}
@@ -188,6 +220,10 @@ U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 	return i_trigger;
 }
 
+U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
+{
+	return Souliss_Logic_T11_mqtt_homie(memory_map, slot, trigger, "");
+}
 /**************************************************************************/
 /*!
 	Timer associated to T11
