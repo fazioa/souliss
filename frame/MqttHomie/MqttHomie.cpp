@@ -62,7 +62,6 @@ void Homie_init()
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_NODEID_FEED).publish(HOMIE_NODEID);
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_STATE_FEED).publish("init");
 	Adafruit_MQTT_Publish(&mqtt, HOMIE_EXTENSIONS_FEED).publish(HOMIE_EXTENSIONS);
-
 }
 
 
