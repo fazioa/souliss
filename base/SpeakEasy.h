@@ -28,6 +28,13 @@
 #include "Typicals.h"
 
 U8 memory_map[MaCaco_MEMMAP];				// define the shared memory map
+
+#ifdef HOMIE_H
+//Adafruit_MQTT_Publish* memory_map_mqtt_publish[MaCaco_NODES*MaCaco_SLOT];				// define the shared memory map for mqtt-homie publish object
+Adafruit_MQTT_Subscribe* memory_map_mqtt_subscribe[MaCaco_NODES*MaCaco_SLOT];				// define the shared memory map for mqtt-homie subscribe object
+
+#endif
+
 U8 data_changed = 1;						// flag
 
 /************** Scheduler ******************/
@@ -121,14 +128,14 @@ unsigned long tmr_fast=0, tmr_slow=0;
 
 /************** Typicals ******************/
 #define	Set_SimpleLight(slot)		Souliss_SetT11(memory_map, slot)
-#define	Set_SimpleLight_mqtt_homie(slot, typicalName, typicalDescription)		Souliss_SetT11_mqtt_homie(memory_map, slot, typicalName, typicalDescription)
+#define	Set_SimpleLight_mqtt_homie(slot, typicalName, typicalDescription)		Souliss_SetT11_mqtt_homie(memory_map, memory_map_mqtt_subscribe, slot, typicalName, typicalDescription)
 
 #define	Logic_SimpleLight(slot)		Souliss_Logic_T11(memory_map, slot, &data_changed)
-#define	Logic_SimpleLight_mqtt_homie(slot, typicalName)		Souliss_Logic_T11_mqtt_homie(memory_map, slot, &data_changed, typicalName)
+#define	Logic_SimpleLight_mqtt_homie(slot, typicalName)		Souliss_Logic_T11_mqtt_homie(memory_map, memory_map_mqtt_subscribe, slot, &data_changed, typicalName)
 
 #define Timer_SimpleLight(slot)		Souliss_T11_Timer(memory_map, slot)
 #define	Set_T11(slot)				Souliss_SetT11(memory_map, slot)
-#define	Logic_T11(slot)				Souliss_Logic_T11(memory_map, slot, &data_changed)
+#define	Logic_T11(slot)				Souliss_Logic_T11(memory_map, memory_map_mqtt_subscribe, slot, &data_changed)
 #define Timer_T11(slot)				Souliss_T11_Timer(memory_map, slot)
 #define Set_LightsGroup(firstSlot, lastSlot) 	Souliss_SetT11Group(memory_map, firstSlot, lastSlot)
 #define Timer_LightsGroup(firstSlot, lastSlot) 	Souliss_T11Group_Timer(memory_map, firstSlot, lastSlot)

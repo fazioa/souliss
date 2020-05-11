@@ -40,10 +40,21 @@ void Souliss_SetT11(U8 *memory_map, U8 slot)
 
 
 
-void Souliss_SetT11_mqtt_homie(U8 *memory_map, U8 slot, String typicalName, String typicalDescription)
+void Souliss_SetT11_mqtt_homie(U8 *memory_map, Adafruit_MQTT_Subscribe* *memory_map_mqtt_subscribe, U8 slot, String typicalName, String typicalDescription)
 	{
-		#ifdef HOMIE_H
-Serial.println("Souliss_SetT11_mqtt_homie: ");
+	#ifdef HOMIE_H
+	Serial.println("Souliss_SetT11_mqtt_homie: ");
+
+	String power_feed;
+	if(typicalName!= "")
+	power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power";
+
+	String power_set_feed = power_feed + "/set";
+	Adafruit_MQTT_Subscribe MQTTrelay0_Read = Adafruit_MQTT_Subscribe(&mqtt, strToCharArray(power_set_feed));
+	mqtt.subscribe(&MQTTrelay0_Read);
+
+
+	memory_map_mqtt_subscribe[MaCaco_TYP_s + slot]=&MQTTrelay0_Read; //mem mqtt objet in memory map
 
 // if(nodes=="")
 // {
@@ -64,6 +75,8 @@ Serial.println("Souliss_SetT11_mqtt_homie: ");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(properties_feed)).publish("power");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(type_feed)).publish("switch");
 	
+	
+	
 	String propertyRoot= typicalRoot + "/power";
 	String property_name_feed = propertyRoot + "/$name";
 	String property_settable_feed = propertyRoot + "/$settable";
@@ -79,15 +92,6 @@ Serial.println("Souliss_SetT11_mqtt_homie: ");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_format_feed)).publish("ON, OFF");
 	Adafruit_MQTT_Publish(&mqtt, strToCharArray(property_retained_feed)).publish("true");
 	
-
-const char power_set_feed[] = "homie/souliss/lucepianoterra/power/set";
-Serial.print("tick - subscribe: ");
-Serial.println(power_set_feed );
-
-	Adafruit_MQTT_Subscribe MQTTrelay0_Read = Adafruit_MQTT_Subscribe(&mqtt, power_set_feed);
-	mqtt.subscribe(&MQTTrelay0_Read);
-
-
 	#endif 
 		
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
@@ -151,42 +155,19 @@ Serial.println(power_set_feed );
 
 */
 /**************************************************************************/
-U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map, U8 slot, U8 *trigger, String typicalName)
+U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map,  Adafruit_MQTT_Subscribe* *memory_map_mqtt_subscribe, U8 slot, U8 *trigger, String typicalName)
 {
 	
 	U8 i_trigger=0;														// Internal trigger
-#ifdef HOMIE_H
 	String power_feed;
-	if(typicalName!= "")
-	power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power";
+	power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power/set";
 
-//	String power_set_feed = power_feed + "/set";
+LO SKETCH DI TEST COMPILA
+ADESSO PROVARE AD USARE L'ARRAY 
+memory_map_mqtt_subscribe
+per recuperaro ed usare l'oggetto mqtt subscribe
 
-      Adafruit_MQTT_Subscribe *subscription;
-      while ((subscription = mqtt.readSubscription(1000))) {
-        if (subscription == &MQTTrelay0_Read) {
-          Serial.print(F("Got: "));
-          Serial.println((char *)MQTTrelay0_Read.lastread);
-          Serial.print("MQTTrelay0_Read.lastread: "); Serial.println((char*) MQTTrelay0_Read.lastread);
 
-          if (!strcmp( (char *)MQTTrelay0_Read.lastread, "ON")) {
-            Serial.println("Set Souliss Relay ON");
-          } else if (!strcmp( (char *)MQTTrelay0_Read.lastread, "OFF")) {
-            Serial.println("Set Souliss Relay OFF");
-          }
-        }
-      }
-	
-	// Look for input value, update output. If the output is not set, trig a data
-	// change, otherwise just reset the input
-        if (subscription == &MQTTrelay0_Read) {
-		  Serial.println("tick esiste msg");
-          Serial.print(F("Got: "));
-		 
-          Serial.println((char *)MQTTrelay0_Read.lastread);
-          Serial.print("MQTTrelay0_Read.lastread: "); Serial.println((char*) MQTTrelay0_Read.lastread);
-}
-#endif
 
 	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed) // Memory value is used as timer
 	{
@@ -196,12 +177,9 @@ U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map, U8 slot, U8 *trigger, String typ
 		memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;			// Switch on the output
 		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_IN_s + slot]; //Set the timer value
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
-		
-		#ifdef HOMIE_H
-		if(typicalName!= "")
-		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("ON");
-		#endif
 	
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("ON");
+
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd ||
 					memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_Timed)		// Off Command
@@ -262,7 +240,7 @@ U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map, U8 slot, U8 *trigger, String typ
 
 U8 Souliss_Logic_T11(U8 *memory_map, U8 slot, U8 *trigger)
 {
-	return Souliss_Logic_T11_mqtt_homie(memory_map, slot, trigger, "");
+	return Souliss_Logic_T11_mqtt_homie(memory_map, NULL , slot, trigger, "");
 }
 /**************************************************************************/
 /*!
