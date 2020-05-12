@@ -35,6 +35,9 @@ extern "C" {
 void Souliss_SetT11(U8 *memory_map, U8 slot)
 {
 	memory_map[MaCaco_TYP_s + slot] = Souliss_T11;
+	
+	
+	
 }
 
 
@@ -52,8 +55,6 @@ void Souliss_SetT11_mqtt_homie(U8 *memory_map, Adafruit_MQTT_Subscribe* *memory_
 	String power_set_feed = power_feed + "/set";
 	Adafruit_MQTT_Subscribe MQTTrelay0_Read = Adafruit_MQTT_Subscribe(&mqtt, strToCharArray(power_set_feed));
 	mqtt.subscribe(&MQTTrelay0_Read);
-
-
 	memory_map_mqtt_subscribe[MaCaco_TYP_s + slot]=&MQTTrelay0_Read; //mem mqtt objet in memory map
 
 // if(nodes=="")
@@ -160,14 +161,21 @@ U8 Souliss_Logic_T11_mqtt_homie(U8 *memory_map,  Adafruit_MQTT_Subscribe* *memor
 	
 	U8 i_trigger=0;														// Internal trigger
 	String power_feed;
-	power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power/set";
-
-LO SKETCH DI TEST COMPILA
-ADESSO PROVARE AD USARE L'ARRAY 
-memory_map_mqtt_subscribe
-per recuperaro ed usare l'oggetto mqtt subscribe
+	//power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power/set";
+	power_feed = String(HOMIE_ROOT) + "/" + typicalName + "/power";
 
 
+Adafruit_MQTT_Subscribe *onoffbutton = memory_map_mqtt_subscribe[MaCaco_TYP_s + slot];
+Serial.println("Logica T11");
+  
+  Adafruit_MQTT_Subscribe *subscription;
+  while ((subscription = mqtt.readSubscription(100))) {
+	  Serial.println("Dentro while");
+    if (subscription == onoffbutton) {
+      Serial.print(F("Got: "));
+      Serial.println((char *)onoffbutton->lastread);
+    }
+  }
 
 	if(memory_map[MaCaco_IN_s + slot] > Souliss_T1n_Timed) // Memory value is used as timer
 	{
@@ -178,8 +186,7 @@ per recuperaro ed usare l'oggetto mqtt subscribe
 		memory_map[MaCaco_AUXIN_s + slot] = memory_map[MaCaco_IN_s + slot]; //Set the timer value
 		memory_map[MaCaco_IN_s + slot] = Souliss_T1n_RstCmd;			// Reset
 	
-		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("ON");
-
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("true");
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OffCmd ||
 					memory_map[MaCaco_AUXIN_s + slot] == Souliss_T1n_Timed)		// Off Command
@@ -193,7 +200,7 @@ per recuperaro ed usare l'oggetto mqtt subscribe
 		
 		#ifdef HOMIE_H
 		if(typicalName!= "")
-		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("OFF");
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("false");
 		#endif
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_OnCmd)
@@ -206,7 +213,7 @@ per recuperaro ed usare l'oggetto mqtt subscribe
 		
 		#ifdef HOMIE_H
 		if(typicalName!= "")
-		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("ON");
+		Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("true");
 		#endif
 	}
 	else if (memory_map[MaCaco_IN_s + slot] == Souliss_T1n_ToggleCmd)
@@ -216,7 +223,7 @@ per recuperaro ed usare l'oggetto mqtt subscribe
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OffCoil;		// Switch OFF the output
 			#ifdef HOMIE_H
 			if(typicalName!= "")
-			Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("OFF");
+			Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("false");
 			#endif
 		}
 		else if(memory_map[MaCaco_OUT_s + slot] == Souliss_T1n_OffCoil)
@@ -224,7 +231,7 @@ per recuperaro ed usare l'oggetto mqtt subscribe
 			memory_map[MaCaco_OUT_s + slot] = Souliss_T1n_OnCoil;		// Switch ON the output
 			#ifdef HOMIE_H
 			if(typicalName!= "")
-			Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("ON");
+			Adafruit_MQTT_Publish(&mqtt, strToCharArray(power_feed)).publish("true");
 			#endif
 		}
 		i_trigger = Souliss_TRIGGED;
